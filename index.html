@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>运动框架案例</title>
+    <link rel="shortcut icon" href="./img/1.ico" type="image/x-ico" />
     <link rel="stylesheet" href="./css/default.css" />
     <link rel="stylesheet" href="./css/style.css" />
   </head>
@@ -34,9 +35,96 @@
                 1.`rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`
                 2.`#${Math.random().toString(16).slice(2,8)}`
     -->
-    <div>
-      <h1>你好！</h1>
-    </div>
+
+    <main>
+      <div id="main">
+        <h1>Canvas的一些小demo</h1>
+      </div>
+      <div class="list">
+        <ul class="list1">
+          <li>
+            <a href="./canvasDemo/01-初级篇_基本API.html">1.canvas基础API</a>
+          </li>
+          <li><a href="./canvasDemo/02-画几个函数.html">2.画几个函数</a></li>
+          <li><a href="./canvasDemo/03-色块绘制.html">3.色阶绘制</a></li>
+          <li><a href="./canvasDemo/04-线型管理.html">4.线型管理</a></li>
+          <li><a href="./canvasDemo/05-渐变色.html">5.渐变处理</a></li>
+          <li>
+            <a href="./canvasDemo/06-图形印章和阴影.html">6.图形印章和阴影</a>
+          </li>
+          <li><a href="./canvasDemo/07-填充方式.html">7.填充方式</a></li>
+          <li><a href="./canvasDemo/08-Path2D对象.html">8.Path2D对象</a></li>
+          <li><a href="./canvasDemo/09-高级篇_文字绘制.html">9.文字绘制</a></li>
+        </ul>
+        <ul class="list2">
+          <li>
+            <a href="./canvasDemo/10-高级篇_图片绘制.html">10.图片绘制</a>
+          </li>
+          <li>
+            <a href="./canvasDemo/11-高级篇_canvas状态保存.html"
+              >11.canvas状态保存</a
+            >
+          </li>
+          <li>
+            <a href="./canvasDemo/12-高级篇_坐标系变换.html"
+              >12.canvas坐标变换</a
+            >
+          </li>
+          <li>
+            <a href="./canvasDemo/13-终极篇_剪裁路径.html">13.canvas裁剪路径</a>
+          </li>
+          <li>
+            <a href="./canvasDemo/14-终极篇_Canvas动画原理.html"
+              >14.canvas动画原理</a
+            >
+          </li>
+          <li>
+            <a href="./canvasDemo/15-终结篇_像素处理.html">15.canvas像素处理</a>
+          </li>
+          <li>
+            <a href="./canvasDemo/16-终极篇_Canvas保存.html"
+              >16.canvas本地保存</a
+            >
+          </li>
+          <li>
+            <a href="./canvasDemo/17-马赛克工具.html">17.canvas马赛克工具</a>
+          </li>
+          <li>
+            <a href="./flappyBird/index.html">18.canva小游戏————FlappyBird</a>
+          </li>
+        </ul>
+      </div>
+      <footer>
+        <p>说明：</p>
+        <p>该网站为开源静态网页，其中所有素材(图片、视频)均来源于网络...</p>
+        <p>如有侵权，请及时联系 1690232138@qq.com 处理！</p>
+      </footer>
+    </main>
+
     <script src="./js/index.js"></script>
+
+    <script>
+      window.onload = function () {
+        alert(
+          "该网站是静态网页，仅限个人学习使用...\n并且没有做移动端适配，建议使用PC端浏览！"
+        );
+      };
+      const liList = [...document.querySelectorAll("li")];
+      const aList = [...document.querySelectorAll("a")];
+
+      liList.forEach((item, index) => {
+        item.addEventListener("mouseenter", () => {
+          setTimeout(() => {
+            changeRandomColor(aList[index]);
+          }, 500);
+        });
+      });
+
+      // 随机改变字体颜色
+      function changeRandomColor(elments) {
+        let color = `#${Math.random().toString(16).slice(2, 8)}`;
+        elments.style.color = color;
+      }
+    </script>
   </body>
 </html>
