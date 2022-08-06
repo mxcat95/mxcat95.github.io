@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>运动框架案例</title>
+  </head>
+
+  <body>
+    <!-- 
+        流星雨运动框架：
+            天空出现很多小圆点，落下来，消失；
+
+        流星：一个元素 节点
+
+        动画效果：为了自由控制流星运动的随机性 我们需要自己去描述它的运动过程；
+
+        运动：需要几个物理量？
+            1.初始位置(s0)
+            2.运动速度(v)
+            3.运动时间(t)
+            4.结束位置(s1)
+
+            此处讨论匀速运动：
+                v = (s1 - s0) / t 速度公式
+
+                sx = s0 + (tx - t0) * v 任意位置
+
+            通过定位的方式来移动元素 向右：x+ 向下：y+ 以像素为单位；
+
+            补充随机颜色的方法：
+                1.`rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`
+                2.`#${Math.random().toString(16).slice(2,8)}`
+    -->
+    <div>
+      <h1>你好！</h1>
+    </div>
+  </body>
+</html>
