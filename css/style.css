@@ -1,0 +1,17 @@
+body {
+  overflow: hidden;
+  height: 900px;
+  background-color: #000;
+  cursor: pointer;
+  background: url("../canvasDemo/imgs/5.jpg") no-repeat center/cover;
+}
+.box {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 5px solid black;
+  box-shadow: 0 0 3px 3px purple;
+  transform: translate(-50%, -50%);
+  background: url("../img/R-C.png") no-repeat center/cover;
+}

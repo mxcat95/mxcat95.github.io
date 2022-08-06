@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>像素管理</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #ccc;
+      }
+      canvas {
+        display: block;
+        margin: 0 auto;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script>
+      /*
+       像素管理：
+        1.获取：
+         let myImgData = ctx.getImageData(x,y,w,h): 
+          返回一个对象，包含了该画布区域每个像素的数据 也就是 rgba
+          这是一个一维数组，所以在处理的时候需要将它升维处理
+          可用来做马赛克处理功能
+        2.写入:
+          putImageData(myImgData,dx,dy) 将获取到的数据写入到新的区域去
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgba(255,0,0,0.9)";
+      ctx.beginPath();
+      ctx.fillRect(0, 0, 100, 100);
+
+      // 获取左上角 100 像素以内的像素数据
+      const myImgData = ctx.getImageData(0, 0, 100, 100);
+      console.log(myImgData); // ImageData{width:100,height:100,data:[255,0,0,230,...,230]}
+
+      let newAr = toTwoDimension(myImgData.data);
+      // 把这些数据推入到另一片区域
+      ctx.putImageData(myImgData, 700, 700); // 此时可以看到右下角出现了跟左上角一模一样的图案
+
+      // 其实本质上就相当于抠了一块图，复制一下，然后放到别的区域
+
+      // 当然，得到的数据是一个一维数组，很长很长，所以我们需要将数组变成二维数组，得到每个像素的颜色值
+
+      // 数组升维的方法
+      function toTwoDimension(arr = [], step = 4) {
+        // 需要返回的数组
+        const newArr = [];
+        let index = 0, // 索引
+          count = parseInt(arr.length / step); // 循环次数
+
+        // 升维
+        for (let i = 0; i < count; i++) {
+          // 按照步长裁切一维数组，组成新的二维数组
+          newArr.push(arr.slice(index, index + step));
+          index += step; // 截取下一组
+        }
+
+        return newArr;
+      }
+
+      let arr = [1, 2, 3, 4, 5, 6, 7, 8];
+
+      console.log(toTwoDimension(arr)); // [[1,2,3,4],[5,6,7,8]]
+    </script>
+  </body>
+</html>

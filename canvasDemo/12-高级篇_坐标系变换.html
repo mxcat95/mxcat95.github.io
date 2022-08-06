@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>坐标系变换</title>
+    <style>
+      body {
+        background-color: #ccc;
+      }
+      canvas {
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <canvas id="canvas1" width="800" height="800"></canvas>
+    <script>
+      /*
+        平移：translte(x,y) 将整个画布的坐标系平移到指定位置
+        旋转：rotate(angle) 将画布坐标系旋转指定角度 顺时针方向旋转
+        缩放：scale(dx,dy)  将画布以指定方向进行缩放
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      let [sx, sy, count, deg] = [1, 1, 0, 0];
+
+      function init() {
+        // 先画一个三角形
+        ctx.beginPath();
+        ctx.fillStyle = "purple";
+        ctx.moveTo(0, 0);
+        ctx.lineTo(200, 0);
+        ctx.lineTo(0, 200);
+        ctx.lineTo(0, 0);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        ctx.textBaseline = "top";
+        ctx.font = "16px 楷体";
+        ctx.fillText("O", 0, 0, 32);
+        ctx.fillText("X", 170, 0, 32);
+        ctx.fillText("Y", 0, 170, 32);
+      }
+      init();
+
+      // 做一个演示动画
+
+      // 平移坐标系
+      function animate() {
+        count++;
+        ctx.clearRect(0, 0, 800, 800);
+        ctx.translate(sx, sy);
+        init();
+
+        if (count <= 400) {
+          requestAnimationFrame(animate);
+        }
+        if (count > 400) {
+          rotate();
+        }
+
+        return;
+      }
+
+      animate();
+
+      // 旋转坐标系
+      function rotate() {
+        deg += 0.5;
+        ctx.clearRect(-800, -800, 1600, 1600);
+        ctx.rotate(((sx / 2) * Math.PI) / 180);
+        init();
+
+        if (deg <= 180) {
+          requestAnimationFrame(rotate);
+        }
+
+        // 反向缩放，相当于水平方向镜像
+        if (deg > 180) {
+          setTimeout(() => {
+            ctx.clearRect(-800, -800, 1600, 1600);
+            ctx.scale(-1, 1);
+            init();
+          }, 1000);
+        }
+
+        return;
+      }
+
+      // 刷新页面
+      setInterval(() => {
+        history.go(0);
+      }, 7000);
+
+      // 画一个一元二次方函数 y = kx^2+b
+      /** @type {HTMLCanvasElement} */
+      const canvas1 = document.querySelector("#canvas1");
+      const ctx1 = canvas1.getContext("2d");
+
+      // 先调整坐标系
+      ctx1.translate(400, 400);
+      ctx1.rotate(Math.PI);
+      ctx1.scale(-1, 1);
+
+      // 绘制横坐标
+      ctx1.beginPath();
+      ctx1.moveTo(-400, 0);
+      ctx1.lineTo(400, 0);
+      ctx1.strokeStyle = "white";
+      ctx1.stroke();
+
+      // 绘制横坐标箭头
+      ctx1.beginPath();
+      ctx1.moveTo(386, 8);
+      ctx1.lineTo(400, 0);
+      ctx1.lineTo(386, -8);
+      ctx1.stroke();
+
+      // 绘制纵坐标
+      ctx1.beginPath();
+      ctx1.moveTo(0, 400);
+      ctx1.lineTo(0, -400);
+      ctx1.stroke();
+
+      // 绘制横坐标箭头
+      ctx1.beginPath();
+      ctx1.moveTo(-8, 386);
+      ctx1.lineTo(0, 400);
+      ctx1.lineTo(8, 386);
+      ctx1.stroke();
+
+      // 写上坐标信息
+
+      ctx1.beginPath();
+      ctx1.fillStyle = "white";
+      ctx1.textBaseline = "bottom";
+      ctx1.font = "16px 楷体";
+      ctx1.fillText("X", 370, 0, 32);
+      ctx1.fillText("Y", 0, 370, 32);
+
+      for (let index = -400; index < 400; index += 50) {
+        ctx1.fillText(`${index}`, index, -10, 32);
+      }
+      for (let index = -400; index < 400; index += 50) {
+        ctx1.fillText(`${index}`, 10, index, 32);
+      }
+
+      // 开始绘制
+      // 显示函数
+      function show(arr) {
+        ctx1.beginPath();
+        ctx1.strokeStyle = "blue";
+        for (let i = 0, len = arr.length; i < len; i++) {
+          if (i) {
+            ctx1.lineTo(arr[i][0], arr[i][1]);
+          } else {
+            ctx1.moveTo(arr[i][0], arr[i][1]);
+          }
+        }
+
+        ctx1.stroke();
+      }
+
+      // 计算坐标点 y = 0.005x^2+50
+      let arr = [];
+
+      for (let i = -400; i <= 400; i++) {
+        arr.push([i, i ** 2 / 200 + 50]);
+      }
+      console.log(arr);
+      show(arr);
+
+      // 绘制曲线
+    </script>
+  </body>
+</html>

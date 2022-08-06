@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片绘制</title>
+    <style>
+      body {
+        height: 1600px;
+        background: url("./imgs/5.jpg") no-repeat center/cover;
+      }
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
+      .fl {
+        float: left;
+      }
+      div {
+        width: 800px;
+        text-align: center;
+      }
+
+      canvas {
+        background: #000;
+        border: 20px ridge rgb(95, 3, 2);
+      }
+      video {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fl">
+      <h1>这是原视频</h1>
+      <video
+        src="./video/video2.mp4"
+        controls="controls"
+        width="600"
+        height="360"
+      >
+        您的浏览器不支持此标签
+      </video>
+    </div>
+    <div class="fl">
+      <h1>这是原图片</h1>
+      <img src="./imgs/美少女.jpg" alt="美少女" width="250" height="362" />
+    </div>
+
+    <div class="fl">
+      <h1>canvas同步视频，并且放大人物</h1>
+      <canvas id="canvas1" width="580" height="840"></canvas>
+    </div>
+    <div class="fl">
+      <h1>canvas绘制图片，并且截取部分放大</h1>
+      <canvas id="canvas2" width="1000" height="660"></canvas>
+    </div>
+    <script>
+      /*
+        1.如果待绘制图片的尺寸超出了canvas可绘制区域 则超出部分隐藏；
+        2.图片传输方式：
+          (1) 使用 new Image()：
+              解析速度快，但是占用请求时间，由服务器带宽决定加载速度，可以缓存；
+          (2) 使用 base64：
+              与网页一并渲染，减少http请求次数，但是解析速度慢，多用于小logo的制作，无法缓存；
+        3.绘制方式：ctx.drawImage()
+          参数说明：
+            3个参数：(img,dx,dy) 信息源，源左上角起始点；
+            5个参数：(img,dx,dy,w,h) 信息源，源左上角起始点，绘制尺寸(建议保持宽高比)
+            9个参数：(img,sx,sy,sw,sh,dy,dy,w,h) 信息源，裁剪起始点，裁剪尺寸，绘制起始点，绘制尺寸
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas1 = document.querySelector("#canvas1");
+      /** @type {HTMLCanvasElement} */
+      const canvas2 = document.querySelector("#canvas2");
+      const ctx1 = canvas1.getContext("2d");
+      const ctx2 = canvas2.getContext("2d");
+
+      // 获取dom元素
+      const video = document.querySelector("video");
+
+      // 生成图片
+      const img = new Image();
+      img.src = "./imgs/美少女.jpg";
+      // 异步加载图片
+      img.onload = () => {
+        ctx2.imageSmoothingEnabled = true; // 开启反锯齿，让图片更平滑 fasle是关闭
+        ctx2.imageSmoothingQuality = "high"; // 设置反锯齿质量 high,middle,low
+        // 当然，这两个属性一般用于图片缩小，放大之后的效果也不明显...
+        // 截取图片
+        ctx2.drawImage(
+          img,
+          124,
+          474,
+          480,
+          230,
+          0,
+          0,
+          canvas2.width,
+          canvas2.height
+        );
+      };
+
+      let time = 2000;
+
+      // 同步视频
+      ctx1.textAlign = "start";
+      ctx1.font = "30px CaskaydiaCove NF";
+      ctx1.fillStyle = "white";
+
+      // 视频播放的时候在canvas上同步画面
+      video.addEventListener("play", () => {
+        setInterval(() => {
+          ctx1.imageSmoothingEnabled = true;
+          ctx1.imageSmoothingQuality = "high";
+          ctx1.drawImage(
+            video,
+            356,
+            40,
+            300,
+            460,
+            0,
+            0,
+            canvas1.width,
+            canvas1.height
+          );
+
+          // 加上自己的水印
+          ctx1.fillText("嘿！大兄弟！", 10, 40, 200);
+          ctx1.fillText("加个水印！", 10, 80, 200);
+          ctx1.fillText("给你看小姐姐跳舞！", 10, 120, 200);
+        }, 1000 / 60);
+
+        setInterval(() => {
+          // 获取随机颜色
+          let color = Math.random().toString(16).slice(2, 8);
+          ctx1.fillStyle = `#${color}`;
+        }, 200);
+      });
+    </script>
+  </body>
+</html>

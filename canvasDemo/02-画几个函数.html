@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>几个初等函数</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+    }
+
+    canvas {
+      display: block;
+      margin: 60px auto 0;
+      background-image: linear-gradient(to top right, rgb(20, 121, 89), rgb(12, 83, 62));
+      border-style: groove;
+      border-color: gold;
+      border-width: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="1800" height="800"></canvas>
+
+  <script>
+    const canvas = document.querySelector('#canvas')
+    const ctx = canvas.getContext('2d')
+
+    // 黑板左边画几个 基本初等函数：
+    ctx.beginPath()
+    // 绘制横坐标轴
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 5
+    ctx.moveTo(0, 400)
+    ctx.lineTo(1800, 400)
+    ctx.stroke()
+
+    // 分屏 分割线
+    ctx.beginPath()
+    ctx.strokeStyle = 'gold'
+    ctx.lineWidth = 10
+    ctx.moveTo(900, 0)
+    ctx.lineTo(900, 900)
+    ctx.stroke()
+
+    // 绘制纵坐标轴
+    // 分屏 分割线
+    ctx.beginPath()
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 5
+    ctx.moveTo(450, 0)
+    ctx.lineTo(450, 800)
+    ctx.moveTo(1350, 0)
+    ctx.lineTo(1350, 800)
+    ctx.stroke()
+
+    // 绘制坐标轴指示箭头
+    ctx.beginPath()
+    ctx.strokeStyle = 'white'
+    ctx.lineWidth = 4
+    ctx.moveTo(440, 10)
+    ctx.lineTo(450, 0)
+    ctx.lineTo(460, 10)
+
+    ctx.moveTo(1340, 10)
+    ctx.lineTo(1350, 0)
+    ctx.lineTo(1360, 10)
+
+    ctx.moveTo(890, 390)
+    ctx.lineTo(900, 400)
+    ctx.lineTo(890, 410)
+
+    ctx.moveTo(1790, 390)
+    ctx.lineTo(1800, 400)
+    ctx.lineTo(1790, 410)
+
+    ctx.stroke()
+
+    // 左边画基本初等函数
+    // 先画 y = x**2 
+    // 原点挪到了 (450,400)
+
+    ctx.beginPath()
+    ctx.strokeStyle = 'blue'
+
+    let pointA = []
+    // 把坐标点存到数组中
+    for (let x = 0; x < 900; x++) {
+
+      pointA.push([x, 400 - (x - 450) ** 2 / 506.25])
+
+    }
+
+    // 渲染图像
+    show(pointA)
+
+    // 绘制 y = x ** 3
+    ctx.beginPath()
+    ctx.strokeStyle = 'purple'
+
+    let pointB = []
+    // 把坐标点存到数组中
+    for (let x = 0; x < 900; x++) {
+      pointB.push([x, 800 - ((x - 450) ** 3 / 227812.5 + 400)])
+    }
+    // 将坐标点取出来 
+    show(pointB)
+
+    // 绘制 y = x
+    ctx.beginPath()
+    ctx.strokeStyle = 'black'
+    ctx.moveTo(50, 800)
+    ctx.lineTo(850, 0)
+    ctx.stroke()
+
+
+    // 右边黑板尝试绘制 y = sin(x)
+    ctx.beginPath()
+    ctx.strokeStyle = 'black'
+    ctx.lineWidth = 3
+    let A = 200
+    let W = 0.06
+
+    let pointC = []
+    // 把坐标点存到数组中
+    for (let x = 908; x < 1800; x++) {
+      pointC.push([x, A * Math.sin(W * (x - 1350 - Math.PI / W)) + 400])
+    }
+
+    show(pointC)
+
+
+    // 将数据图像渲染出来
+    function show(arr) {
+      for (let i = 0, len = arr.length; i < len; i++) {
+        if (i) {
+          ctx.lineTo(arr[i][0], arr[i][1])
+        } else {
+          ctx.moveTo(arr[i][0], arr[i][1])
+        }
+      }
+
+      ctx.stroke()
+    }
+  </script>
+</body>
+
+</html>

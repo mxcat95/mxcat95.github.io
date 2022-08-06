@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文字绘制</title>
+    <style>
+      body {
+        background-color: #ccfc;
+      }
+
+      canvas {
+        display: block;
+        margin-inline: auto;
+        background-color: black;
+        border: 10px ridge peru;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+      // VScode 对 canvas api的提示几乎没有 可以在获取 canvas 之前 加上下面这个注释 即可使用全部智能提示
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      canvas.width = window.innerWidth / 1.5;
+      canvas.height = window.innerHeight / 1.1;
+      const ctx = canvas.getContext("2d");
+
+      // 显示编程入门最经典的一句话： Hello World!
+
+      // 文字对齐方案 最受控制的位置定位方案 这个对齐基线是与文字显示起始点横坐标垂直的那条线
+      /* 
+
+      文字案例：这是基准线这是文字显示到额起始点
+      _______________________________________
+      |这是基准线|这是文字显示的起始点  start    |
+      |这是文字显|示的起始点           center   | 
+      |示的起始点|                    end      |
+      -----------------------------------------
+
+      超出canvas画布的部分 就不显示了
+    */
+
+      ctx.strokeStyle = "purple";
+
+      let [x, y, w, h, b] = [20, 20, 300, 240, 1];
+      ctx.lineWidth = b;
+      ctx.strokeRect(x, y, w, h);
+
+      // 把文字定位到矩形框中 水平居中
+      ctx.textAlign = "center";
+
+      // 字体
+      ctx.font = "30px serif";
+      // 在工作中 需要使用字体 一定要问清楚 公司权限内能使用的字体 不能随意使用公司未授权或未购买的字体
+
+      // 实心字
+      ctx.fillStyle = "green";
+      ctx.fillText("Hello World!", w / 2 + x + b, h / 2.5 + y, 180); // 文字 起始位置(x,y) 预留区域(区域太小 文字会被压缩)
+      // 注意：文字起始位置的纵坐标 是以文字的基线为准 默认是 baseline
+      // 空心字
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 1;
+      ctx.strokeText("Hello World!", w / 2 + x + b, h / 2.5 + y + 50, 180);
+
+      // 上述文字接口 没法清晰的给出文字的 展宽 只能粗略估计一个比较大的数值
+      // 可以通过下述方式 查看要显示的文字的基本信息
+
+      console.log(ctx.measureText("Hello World!")); // TextMetrics.width: 180 返回一个对象 包含一些信息
+
+      let str = "dadasdasdadasdadasdasdasdasdasda";
+      ctx.font = "48px serif";
+      ctx.textAlign = "start";
+      ctx.textBaseline = "top"; // 顶部基线对齐 (top middle baseline bottom)
+      ctx.fillText(str, x * 5 + w, y, ctx.measureText(str).width);
+    </script>
+  </body>
+</html>

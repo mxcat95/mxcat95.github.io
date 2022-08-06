@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>动画原理</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      /*
+       1.动画原理：
+          动画效果的条件：
+            (1) 需要在短时间内展示多张连续变化的图片；
+                为了保证动画的连续性和流畅度，一般选用 一秒60张图片，也就是60帧；
+            (2) 连续展示的多张图片的内容，其状态必须要发生变化，否则不具备动画效果；
+                比如 颜色、角度、位置、尺寸...
+        
+        2.canvas动画逻辑：
+          (1) 先绘制一帧
+          (2) 在短时间内绘制多帧
+          (3) 绘制多帧的方式：
+
+            前提知识：浏览器支持多线程，但js是单线程，其中又分为宏任务和微任务
+              定时器就是一种异步微任务，它的执行顺序和时间会受到宏任务的影响；
+
+            a.定时器:
+              I.setInterval(fn,delay)： 
+                执行的时候如果遇到其他优先级更高的任务不会停下来去等待，导致两帧之间时间间隙缩小 
+                也可能大于或者等于delay 造成动画效果加速或者减速的现象，加速较为常见
+              II.setTimeout(fn,delay): 
+                执行的时候遇到其他优先级更高的任务，会停下来等待，直到任务结束，才会继续执行，
+                这就会导致相邻两帧之间时间间隙被扩大，就影响而言，比setInterval好一些
+                
+            b.Window.requestAnimationFrame
+              当浏览器重新渲染网页的时候，就来执行当前任务；
+              由浏览器内置的API来计算下一帧的时间；比定时器优秀；
+              当浏览器最小化或是页面切换的时候，该方法会暂停渲染，
+              但是位置参数计算不会停止，所以当浏览器复原之后，该方法能继续执行计算结果；
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      let w, h;
+
+      // 浏览器窗口尺寸变化的时候，让canvas同步变化 是用立执行函数优化代码
+      ~~(function resetCanvas() {
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w;
+        canvas.height = h;
+        window.onresize = arguments.callee;
+      })();
+
+      // 使用requestAnimationFrame 来实现一个弹性碰撞小球的运动动画
+      // 弹性碰撞：物体做匀速运动，与另一物体碰撞之后，没有动量损耗，速度大小不变，运动方向反向；
+
+      // 已知 浏览器窗口的宽高 w、h, 小球的半径 r,球心位置 (x,y),运动速度 vx,vy
+      // 小球碰撞浏览器左边：x < r
+      // 小球碰撞浏览器右边：x + r > w 没必要等于，因为js浮点数精度问题 几乎不可能等于
+      // 小球碰撞浏览器上边：y < r
+      // 小球碰撞浏览器下边：y + r > h
+
+      // 开始实现动画
+      let [x, y, r, vx, vy] = [100, 100, 80, 3, 4];
+      function animate() {
+        // 每绘制一帧之前先把原来的帧清除，否则会把绘制痕迹连在一起
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.beginPath();
+        ctx.fillStyle = "gold";
+
+        // 边界判断
+        if (x < r || x + r > w) vx *= -1;
+        if (y < r || y + r > h) vy *= -1;
+
+        // 切换小球的位置
+        x += vx;
+        y += vy;
+        // 绘制小球
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 绘制下一帧
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>

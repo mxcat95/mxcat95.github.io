@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片绘制</title>
+    <style>
+      canvas {
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="400"></canvas>
+    <script>
+      /*
+        Canvas状态保存，就好像栈操作一样，先进后出：
+        两个API：
+          save(): 保存当前画布设置：比如线条样式、填充样式、颜色设置、全局透明蒙板、字体等等...
+          restore()：恢复到最近一个已保存的设置
+
+        便利之处：减少相同配置的代码重复量
+        缺点：需要数 save 了几次，不够智能...
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "white";
+      ctx.font = "30px 宋体";
+      ctx.textBaseline = "top";
+      ctx.fillText("这是一开始的状态，白色宋体！", 0, 0, 500);
+      ctx.save(); // 保存初始化设置
+
+      ctx.fillStyle = "red";
+      ctx.font = "20px 黑体";
+      ctx.textBaseline = "top";
+      ctx.save(); // 保存新设置 红色黑体
+
+      ctx.fillStyle = "orange";
+      ctx.font = "16px 楷体";
+      ctx.textBaseline = "top";
+      ctx.fillText("这是第三次更新的状态，橙色楷体！", 0, 50, 500);
+
+      ctx.restore(); // 回退设置
+      ctx.fillText("这是第二次更新的状态，红色黑体！", 0, 90, 500);
+
+      ctx.restore(); // 回退到更久远的设置
+      ctx.fillText("这是第一次更新的状态，白色宋体！", 0, 130, 500);
+    </script>
+  </body>
+</html>

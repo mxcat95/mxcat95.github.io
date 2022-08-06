@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>裁剪路径</title>
+    <style>
+      body {
+        background-color: #ccc;
+      }
+      canvas {
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script>
+      /*
+        clip(): 裁剪 多用于展示一些比较美观的图形叠加
+        clip(fillRule): fillRule 默认的裁剪路径，与canvas一样大，所以不具备裁剪效果
+        clip(path,fillRule): 裁剪路径，裁剪算法("nonzero":非零环绕，"evenodd":奇偶环绕)
+      */
+
+      // 获取绘制环境
+
+      /** @type {HTMLCanvasElement} */
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 缓存一个三角形裁剪区域
+      const path = new Path2D();
+      path.moveTo(0, 0);
+      path.lineTo(100, 0);
+      path.lineTo(50, 100);
+      path.lineTo(0, 0);
+
+      // 先画上一个红色图层
+      ctx.fillStyle = "purple";
+      ctx.fillRect(0, 0, 500, 500);
+
+      // 平移坐标系
+      ctx.translate(100, 100);
+      ctx.clip(path); // 裁剪区域 但是此时还什么都没有
+
+      // 把坐标系原点移动到原位置
+      ctx.translate(0, 0);
+      // 再绘制一个白色的图层
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, 500, 500); // 此时 就能看到一个白色三角形区域
+    </script>
+  </body>
+</html>

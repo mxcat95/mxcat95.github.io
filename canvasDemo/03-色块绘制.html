@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>色块绘制</title>
+    <style>
+      body {
+        background-color: #ccfc;
+      }
+
+      canvas {
+        display: block;
+        margin-inline: auto;
+        background-color: black;
+        border: 10px ridge peru;
+      }
+
+      fieldset {
+        width: 820px;
+        height: 100px;
+        padding: 0;
+        margin: 5px auto 0;
+        background-color: #ccc;
+        border: 4px solid purple;
+      }
+
+      legend {
+        color: blueviolet;
+        margin: auto;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      select {
+        display: inline-block;
+        margin-left: 20px;
+        margin-top: 18px;
+        height: 30px;
+        font-size: 18px;
+        text-align: left;
+        color: darkcyan;
+        border: none;
+        cursor: pointer;
+        background: #ccc;
+        border-bottom: 2px solid purple;
+        outline: none;
+        transition: 0.6s;
+      }
+
+      select:hover {
+        border-bottom: 2px solid red;
+      }
+
+      input,
+      button {
+        display: inline-block;
+        padding: 0;
+        width: 124px;
+        height: 28px;
+        color: blue;
+        font-size: 20px;
+        text-align: center;
+        outline: none;
+        border: none;
+        background: #ccc;
+        border-bottom: 2px solid purple;
+        transition: 0.6s;
+      }
+
+      input:hover {
+        border-bottom: 2px solid red;
+      }
+
+      button {
+        cursor: pointer;
+        color: darkcyan;
+        font-size: 16px;
+        border: 2px solid green;
+      }
+
+      button:hover {
+        border: 2px solid darkred;
+        color: darkred;
+        line-height: 18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="720" height="720"></canvas>
+
+    <fieldset>
+      <legend>选项卡</legend>
+      <select name="type" id="type">
+        <option value="">--请选择模式</option>
+        <optgroup label="模式" id="lab">
+          <option value="方形色阶">方形色阶</option>
+          <option value="圆形色阶">圆形色阶</option>
+          <option value="同心圆">同心圆</option>
+        </optgroup>
+      </select>
+      <input type="number" placeholder="参数1" />
+      <input type="number" placeholder="参数2" />
+      <input type="number" placeholder="参数3" />
+      <input type="number" placeholder="参数4" min="0" max="255" />
+      <button>确定</button>
+    </fieldset>
+
+    <script>
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 色阶：颜色表示可以使用 英文、十六进制、数字(0~255)
+      // 色彩学最基本的原理：三基色 red green blue 即rgb 这三种颜色相互独立 都没法通过其他两种颜色混合而成
+      // 但是自然界大部分可见的颜色都可以通过三基色按照不同比例合成 反之，大部分颜色都可以分解为三基色
+      // 彩虹之所以是七色：三维空间中，彩虹的反射光为：红橙黄绿青蓝紫
+      // 是因为： 红和绿混合 中间会出现橙和黄色 绿和蓝混合  中间出现青色 蓝和红混合 中间出现紫色
+      // 通过 rgb(x,y,z) 的方式 可以在 canvas 绘制不同色彩的渐变色阶块
+      // 但是显示器是二维 没法把全部的色阶显示出来 所以保持一个基色不变 控制另外两个基色改变
+      // 色阶透明度：可以控制当前色阶的透光度 rgba(x,y,z,n)
+      // 也可以全局设置一个 透明蒙板 globalAlpha
+
+      ctx.globalAlpha = 0.9; // 全局透明蒙板 只能影响之后绘制的图像 之前绘制的不受影响
+
+      // 渐变色块
+      /**
+       * @功能：绘制渐变色阶方块
+       * @参数：行数，列数，色块宽度，控制色(无法显示三维色阶 所以把三维定死)
+       */
+      function createColorBoard(row, col, w, ctrol) {
+        if (row < 0 || col < 0 || w < 0 || ctrol < 0 || ctrol > 255) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < row; i++) {
+          for (let j = 0; j < col; j++) {
+            // 绘制色阶块
+            ctx.beginPath();
+            ctx.fillStyle = `rgb(${Math.floor(
+              255 - (255 / row) * i
+            )},${Math.floor(255 - (255 / col) * j)},${ctrol})`;
+            ctx.fillRect(j * w, i * w, w, w);
+          }
+        }
+      }
+
+      createColorBoard(80, 80, 10, 125);
+
+      // 渐变圆形
+      /**
+       * @功能：绘制渐变色阶圆
+       * @参数：行数，列数，半径，控制色(无法显示三维色阶 所以把三维定死)
+       */
+      function createColorCircle(row, col, r, ctrol) {
+        if (row < 0 || col < 0 || r < 0 || ctrol < 0 || ctrol > 255) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < row; i++) {
+          for (let j = 0; j < col; j++) {
+            // 绘制色阶块
+            ctx.beginPath();
+            ctx.fillStyle = `rgb(${Math.floor(
+              255 - (255 / row) * i
+            )},${Math.floor(255 - (255 / col) * j)},${ctrol})`;
+            ctx.arc(j * r * 2 + r, i * r * 2 + r, r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // createColorCircle(40, 40, 10, 125)
+
+      // 同心圆
+      /**
+       * @功能：绘制彩色同心圆
+       * @参数：数量 半径 宽度 间距
+       */
+      function createConcentricCircle(count, r, weight, distance) {
+        if (count < 0 || r < 0 || weight < 0 || distance < 0) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < count; i++) {
+          // 取随机数
+          let color = Math.random().toString(16).slice(2, 8);
+          ctx.strokeStyle = `#${color}`;
+          ctx.lineWidth = weight;
+          ctx.beginPath();
+          ctx.arc(
+            canvas.width / 2,
+            canvas.height / 2,
+            r + i * distance,
+            0,
+            Math.PI * 2
+          );
+          ctx.stroke();
+        }
+      }
+
+      // createConcentricCircle(25, 5, 2, 10)
+
+      const select = document.querySelector("#type"); // 选择控件
+      const dataLists = [...document.querySelectorAll("input")]; // 参数
+      const submit = document.querySelector("button"); // 提交按钮
+
+      const params = [
+        ["行数", "列数", "色块宽度", "色调(0~255)"],
+        ["行数", "列数", "色块半径", "色调(0~255)"],
+        ["数量", "半径", "线条宽度", "间距"],
+        ["参数1", "参数2", "参数3", "参数4"],
+      ];
+
+      let count = 0; // 选择框点击次数统计
+      select.addEventListener("click", function () {
+        count++;
+        // 只有第二次点击之后 才能获取最新的选择结果
+        if (count % 2 === 0) {
+          switch (this.value) {
+            case "方形色阶":
+              getPlaceholder(0);
+              break;
+            case "圆形色阶":
+              getPlaceholder(1);
+              break;
+            case "同心圆":
+              getPlaceholder(2);
+              break;
+            default:
+              getPlaceholder(3);
+              break;
+          }
+        } else {
+          return;
+        }
+      });
+
+      // 显示输入标签的 提示信息
+      function getPlaceholder(index) {
+        for (let i = 0, len = dataLists.length; i < len; i++) {
+          dataLists[i].placeholder = params[index][i];
+        }
+      }
+
+      // 判断数据是否完全
+      function isFullData() {
+        let paramList = [];
+        dataLists.forEach((input) => paramList.push(input.value));
+
+        return paramList.includes("");
+      }
+
+      // 点击事件
+      submit.addEventListener("click", () => {
+        // 用户是否选择模式 没选择不执行任何操作
+        if (select.value === "") return;
+
+        // 参数不完整 不执行任何操作
+        if (isFullData()) return;
+
+        switch (select.value) {
+          case "方形色阶":
+            createColorBoard(
+              parseInt(dataLists[0].value),
+              parseInt(dataLists[1].value),
+              parseInt(dataLists[2].value),
+              parseInt(dataLists[3].value)
+            );
+            break;
+          case "圆形色阶":
+            createColorCircle(
+              parseInt(dataLists[0].value),
+              parseInt(dataLists[1].value),
+              parseInt(dataLists[2].value),
+              parseInt(dataLists[3].value)
+            );
+            break;
+          case "同心圆":
+            createConcentricCircle(
+              parseInt(dataLists[0].value),
+              parseInt(dataLists[1].value),
+              parseInt(dataLists[2].value),
+              parseInt(dataLists[3].value)
+            );
+            break;
+
+          default:
+            break;
+        }
+      });
+
+      // ctx.globalAlpha = 0.3; // 添加一块透明板
+      // ctx.fillStyle = "black";
+      // ctx.fillRect(
+      //   canvas.width / 4,
+      //   canvas.height / 4,
+      //   canvas.width / 2,
+      //   canvas.height / 2
+      // );
+    </script>
+  </body>
+</html>

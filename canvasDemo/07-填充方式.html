@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>填充方式</title>
+  <style>
+    body {
+      background-color: #ccfc;
+    }
+
+    canvas {
+      display: block;
+      margin-inline: auto;
+      background-color: black;
+      border: 10px ridge peru;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.querySelector('#canvas')
+    canvas.width = window.innerWidth / 1.5
+    canvas.height = window.innerHeight / 1.1
+    const ctx = canvas.getContext('2d')
+
+    // fill() 是有参数的 参数就是填充方式 默认是闭合区域填充 一般来说很少用
+
+    ctx.fillStyle = 'white'
+    ctx.beginPath()
+    ctx.arc(200, 200, 150, 0, Math.PI * 2)
+    ctx.arc(200, 200, 100, 0, Math.PI * 2)
+    ctx.arc(200, 200, 50, 0, Math.PI * 2)
+    ctx.arc(200, 200, 25, 0, Math.PI * 2)
+
+    ctx.fill('evenodd') // 奇偶性 如果嵌套数量是奇数 就奇数填充 反正则偶数填充
+
+    // 实际上画了四个圆 只是奇数圆就不填充了
+
+    // 画圆的顺序一定是先画大圆 最后画小圆 否则下面的小圆会被大圆覆盖 无法显示
+    ctx.beginPath()
+    ctx.fillStyle = 'white'
+    ctx.arc(500, 200, 150, 0, Math.PI * 2)
+    ctx.fill()
+
+    ctx.beginPath()
+    ctx.fillStyle = 'red'
+    ctx.arc(500, 200, 100, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.fillStyle = 'blue'
+    ctx.arc(500, 200, 50, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.fillStyle = 'yellow'
+    ctx.arc(500, 200, 25, 0, Math.PI * 2)
+    ctx.fill()
+  </script>
+
+</body>
+
+</html>

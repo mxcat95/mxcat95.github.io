@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图形印章和阴影</title>
+  <style>
+    body {
+      background-color: #ccfc;
+    }
+
+    canvas {
+      display: block;
+      margin-inline: auto;
+      background-color: black;
+      border: 10px ridge peru;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.querySelector('#canvas')
+    canvas.width = window.innerWidth - 50
+    canvas.height = window.innerHeight - 50
+    const ctx = canvas.getContext('2d')
+
+
+    const img = new Image()
+    img.src =
+      'https://pics4.baidu.com/feed/4afbfbedab64034f3ac483f27dbf14360b551db8.jpeg?token=38d2171bf7d1ee748e7686e9ef3c535f'
+
+    // 图表加载是异步的
+    img.onload = function () {
+      const ptrn = ctx.createPattern(img, 'repeat') // 图片印章
+
+      // 可以在线条里填充图形
+      ctx.strokeStyle = ptrn
+      ctx.lineWidth = 50
+      ctx.beginPath()
+      ctx.strokeRect(20, 70, 525, 761)
+
+      // 可以重复刻印
+      // 设置阴影效果
+      ctx.shadowOffsetX = 3 // 水平偏移
+      ctx.shadowOffsetY = 3 // 垂直偏移
+      ctx.shadowBlur = 30 // 阴影虚化
+      ctx.shadowColor = 'red' // 阴影颜色
+
+      ctx.fillStyle = ptrn
+      ctx.fillRect(610, 50, 600, 800)
+
+      ctx.shadowOffsetX = 3 // 水平偏移
+      ctx.shadowOffsetY = 3 // 垂直偏移
+      ctx.shadowBlur = 30 // 阴影虚化
+      ctx.shadowColor = 'orange' // 阴影颜色
+
+      ctx.fillStyle = ptrn
+      ctx.fillRect(1250, 50, 600, 800)
+
+
+    }
+  </script>
+
+</body>
+
+</html>

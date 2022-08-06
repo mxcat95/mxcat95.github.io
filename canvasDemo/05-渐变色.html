@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>线型管理</title>
+  <style>
+    body {
+      background-color: #ccfc;
+    }
+
+    canvas {
+      display: block;
+      margin-inline: auto;
+      background-color: black;
+      border: 10px ridge peru;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="720" height="720"></canvas>
+
+  <script>
+    const canvas = document.querySelector('#canvas')
+    const ctx = canvas.getContext('2d')
+
+    // 渐变管理 可以使用渐变来进行填充或者描边 这种渐变可用于绘制渐变的图表 让图表更美观
+    // 创建canvasGradient对象 来进行渐变操作
+
+    // 线性渐变：createLinearGradient(x1,y1,x2,y2) 渐变起点和终点
+    // 径向渐变：createRadialGradient(x1,y1,r1,x2,y2,r2) 起始圆 结束圆 起始圆决定颜色的扩散中心
+    // 径向渐变很好玩，有两种情况：
+    // 1.两个圆并不内含(相交，相切，外离)：渐变范围：始终在同时与两个圆相切的两条切线之间
+    //    r1=r2 范围是一个矩形 r1 != r2 就是一个扇形区域 渐变点就是两切线的交点处...具体方向跟两个圆的位置有关
+
+    // 2.两个圆内含：扩散中心在起始圆的圆心处... 两个圆若圆心位置一样，就是一个同心圆的渐变
+    //    r2=r1 不产生渐变  r2 > r1 由圆心向外扩散  r2 < r1 由外向圆心扩散
+
+    // gradient.addColorStop(position,color) 颜色断点位置 (0~1之间) 颜色 #fff rgba(0,0,0,1)等
+
+    // 线性渐变
+    const lingrad = ctx.createLinearGradient(0, 0, 0, 150) // 从上往下渐变 渐变高度 150
+    lingrad.addColorStop(0, '#00ABEB') // 蓝色
+    lingrad.addColorStop(0.5, '#fff') // 白色
+    lingrad.addColorStop(0.5, '#26c000') // 绿色
+    lingrad.addColorStop(1, '#fff') // 白色
+
+    const lingrad2 = ctx.createLinearGradient(0, 50, 0, 95) // 50到95的渐变
+    lingrad2.addColorStop(0, 'purple')
+    lingrad2.addColorStop(0.3, 'blue')
+    lingrad2.addColorStop(0.5, 'red')
+    lingrad2.addColorStop(1, 'rgba(0,0,0,0.1)')
+
+    ctx.fillStyle = lingrad
+    ctx.strokeStyle = lingrad2
+
+    ctx.beginPath()
+    ctx.fillRect(10, 10, 150, 150)
+    ctx.strokeRect(50, 50, 50, 50)
+
+    // 径向渐变 做一个对角线演示动画 
+    let [x, y, sd] = [400, 400, 1]
+
+    let lingrad3
+
+    setInterval(() => {
+
+      lingrad3 = ctx.createRadialGradient(x, y, 60, 400, 400, 240) // 同心圆 r2 > r1 由内向外扩散
+      lingrad3.addColorStop(0, 'red')
+      lingrad3.addColorStop(0.1, 'orange')
+      lingrad3.addColorStop(0.3, 'yellow')
+      lingrad3.addColorStop(0.5, 'green')
+      lingrad3.addColorStop(0.7, 'blue')
+      lingrad3.addColorStop(0.9, 'cyan')
+      lingrad3.addColorStop(1, 'purple')
+      // ctx.globalAlpha = 0.7 // 透明蒙板
+
+      ctx.fillStyle = lingrad3
+      ctx.beginPath()
+      ctx.arc(400, 400, 300, 0, Math.PI * 2) // 绘制多大的圆
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.strokeStyle = '#ccfc'
+      ctx.lineWidth = 4
+      ctx.arc(x, y, 60, 0, Math.PI * 2) // 起始圆的参考辅助线
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.arc(400, 400, 240, 0, Math.PI * 2) // 结束圆的参考辅助线
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.arc(400, 400, 300, 0, Math.PI * 2) // 绘制的圆的参考线
+      ctx.stroke()
+
+      x += sd
+      y += sd
+
+      if (x < 350) {
+        sd *= -1
+      }
+
+      if (x > 450) {
+        sd *= -1
+      }
+
+    }, 1000 / 60)
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Path2D对象</title>
+    <style>
+      body {
+        background-color: #ccfc;
+      }
+
+      canvas {
+        display: block;
+        margin-inline: auto;
+        background-color: black;
+        border: 10px ridge peru;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#canvas");
+      canvas.width = window.innerWidth / 1.5;
+      canvas.height = window.innerHeight / 1.1;
+      const ctx = canvas.getContext("2d");
+
+      // 在新版本浏览器中 已经支持 Path2D 对象
+      // 这个对象可以用来缓存绘制路径 简化代码 不过似乎并不是很方便
+      // 可配合裁剪clip一起使用
+
+      const square = new Path2D();
+      square.rect(10, 10, 100, 100); // 矩形轨迹
+
+      const circle = new Path2D(square); // 复制矩形轨迹
+      circle.moveTo(220, 60);
+      circle.arc(170, 60, 50, 0, Math.PI * 2);
+
+      ctx.strokeStyle = "white";
+      ctx.stroke(circle); // 把所有轨迹一起绘制
+    </script>
+  </body>
+</html>

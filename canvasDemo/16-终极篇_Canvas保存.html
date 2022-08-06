@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas保存</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: #ccfc;
+      }
+      canvas {
+        margin: 0 auto;
+        cursor: pointer;
+        background-color: #000;
+        vertical-align: bottom;
+      }
+      button {
+        width: 200px;
+        height: 40px;
+        margin-left: 10px;
+        vertical-align: bottom;
+        background-color: skyblue;
+        cursor: pointer;
+        outline: none;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas1" width="1000" height="600"></canvas>
+    <canvas id="canvas2" width="600" height="600"></canvas>
+    <button>保存图片</button>
+    <h1>单机canvas并长按鼠标左键开启放大镜，松开左键关闭放大镜！</h1>
+    <script>
+      /*
+        canvas本质上也是一种图片
+        可以通过toDataURL('type',quality) 将 canvas 转化为一个base64的连接 
+        第一个参数是图片格式，第二个参数：0~1 图片品质
+        再给 a 标签添加这个连接 就可以下载图片了
+        a.src = canvas.toDataURL('image/png',1)
+        a.download = '图片名.png'
+        a.click()
+      */
+
+      // 获取绘制环境 我们实现一个放大镜效果
+
+      /** @type {HTMLCanvasElement} */
+      const canvas1 = document.querySelector("#canvas1");
+      const ctx1 = canvas1.getContext("2d");
+      /** @type {HTMLCanvasElement} */
+      const canvas2 = document.querySelector("#canvas2");
+      const ctx2 = canvas2.getContext("2d");
+
+      // 保存canvas
+      function saveCanvas(canvas) {
+        // 获取canvas转化后的图片连接
+        const base64Img = canvas.toDataURL("image/png", 1);
+        // 创建 a 标签
+        const a = document.createElement("a");
+        // 给 a 标签添加下载链接
+        a.href = base64Img;
+        // 文件下载名
+        a.download = "美少女.png";
+        // 单机下载
+        a.click();
+      }
+      let img = new Image();
+      // 在画布一绘制一个图片
+      img.src = "./imgs/1.webp";
+      img.onload = function () {
+        ctx1.drawImage(img, 0, 0, 1000, 600);
+      };
+      // 开启第二个画布的反锯齿
+      ctx2.imageSmoothingEnabled = true;
+      ctx2.imageSmoothingQuality = "high";
+
+      // 鼠标进入画布一，就在画布二上同步放大鼠标附近某一部分区域
+
+      // 放大的方法
+      function showDetail(ctx, canvas, events, howMany) {
+        // 清空画布二
+        ctx.clearRect(0, 0, 400, 600);
+        // 同步绘制
+        ctx.drawImage(
+          canvas,
+          events.offsetX,
+          events.offsetY,
+          howMany,
+          howMany,
+          0,
+          0,
+          600,
+          600
+        );
+      }
+
+      // 状态判断 鼠标按下之后再开始放大 抬起就停止放大
+      let isMouesDown = false;
+      canvas1.addEventListener("mousedown", function (ev) {
+        isMouesDown = true;
+        showDetail(ctx2, canvas1, ev, 80);
+      });
+      canvas1.addEventListener("mousemove", function (ev) {
+        if (isMouesDown) {
+          showDetail(ctx2, canvas1, ev, 80);
+        }
+        return;
+      });
+      canvas1.addEventListener("mouseup", function (ev) {
+        isMouesDown = false;
+        return;
+      });
+
+      // 点击保存按钮保存放大后的图片
+      document.querySelector("button").addEventListener("click", () => {
+        saveCanvas(canvas2);
+      });
+    </script>
+  </body>
+</html>

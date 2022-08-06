@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <title>FlappyBird</title>
+    <style>
+      body {
+        /* overflow: hidden; */
+        background-color: #222;
+      }
+
+      /* 界面设置 */
+      canvas {
+        display: none;
+        cursor: pointer;
+        margin: 200px auto 0;
+        background-color: #ccc;
+        border: 5px groove gold;
+      }
+
+      #box {
+        width: 288px;
+        height: 512px;
+        text-align: center;
+        margin: 200px auto 0;
+        background-color: #ccfc;
+        background: url("./FlappyBird/bg_day.png") center/cover;
+        border: 5px groove gold;
+      }
+
+      #box div {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        margin: 50px auto;
+        cursor: pointer;
+        border: 3px groove gold;
+        border-radius: 50%;
+      }
+
+      .bl {
+        background: url("./image/2.webp") center/cover;
+      }
+
+      .br {
+        background: url("./image/1.webp") center/cover;
+      }
+
+      span {
+        position: absolute;
+        display: block;
+        width: 60px;
+        height: 60px;
+        right: -60px;
+        top: -20px;
+        text-align: center;
+        line-height: 60px;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 50%;
+        transition: 0.5s;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 
+    游戏开发：飞行的小鸟
+    使用 canvas 进行开发
+    思想：面向对象的思想
+
+    抽象：
+      整体的游戏模块：控制游戏的开始、结束、暂停...一些列游戏互动行为
+
+      场景模块：场景的切换 渲染不同的场景
+
+      背景模块、地板模块、柱子模块、小鸟模块... 继承一个可以绘制的基础模块类
+  -->
+
+    <canvas id="canvas"></canvas>
+    <div id="box">
+      <h1>你准备好了吗？</h1>
+      <div class="bl">
+        <span class="pl">YES！</span>
+      </div>
+      <div class="br">
+        <span class="pr">NO!</span>
+      </div>
+    </div>
+    <audio id="aud" controls loop autoplay></audio>
+    <script src="./config.js"></script>
+    <script src="./music.js"></script>
+    <script src="./Modules/components/Tools.js"></script>
+
+    <!-- 引入各种组件 -->
+    <!-- 组件基类 -->
+    <script src="./Modules/components/basic/Basic.js"></script>
+    <!-- 背景 -->
+    <script src="./Modules/components/Background.js"></script>
+    <!-- Logo -->
+    <script src="./Modules/components/Logo.js"></script>
+    <!-- 按钮 -->
+    <script src="./Modules/components/Button.js"></script>
+    <!-- 准备场景 -->
+    <script src="./Modules/components/GetReady.js"></script>
+    <!--倒计时 -->
+    <script src="./Modules/components/CountDown.js"></script>
+    <!-- 陆地 -->
+    <script src="./Modules/components/land.js"></script>
+    <!-- 小鸟 -->
+    <script src="./Modules/components/Bird.js"></script>
+    <!-- 管道 -->
+    <script src="./Modules/components/Pipe.js"></script>
+    <!-- 结束标题 -->
+    <script src="./Modules/components/Over.js"></script>
+    <!-- 分数统计 -->
+    <script src="./Modules/components/Score.js"></script>
+    <!-- 奖章 -->
+    <script src="./Modules/components/Medal.js"></script>
+    <!-- 计分面板 -->
+    <script src="./Modules/components/ScoreBar.js"></script>
+
+    <!-- 引入主题模块 -->
+    <!-- 游戏开始前场景 -->
+    <script src="./Modules/scene/Start.js"></script>
+    <!-- 游戏准备场景 -->
+    <script src="./Modules/scene/Ready.js"></script>
+    <!-- 游戏进行模块 -->
+    <script src="./Modules/scene/Gaming.js"></script>
+    <!-- 游戏结束模块 -->
+    <script src="./Modules/scene/GameOver.js"></script>
+    <!-- 游戏场景控制模块 -->
+    <script src="./Modules/Scene.js"></script>
+    <!-- 游戏控制模块 -->
+    <script src="./Modules/Game.js"></script>
+    <!-- 游戏启动入口 -->
+    <script src="./main.js"></script>
+  </body>
+</html>

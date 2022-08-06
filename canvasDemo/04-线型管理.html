@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>线型管理</title>
+    <style>
+      body {
+        background-color: #ccfc;
+      }
+
+      canvas {
+        display: block;
+        margin-inline: auto;
+        background-color: black;
+        border: 10px ridge peru;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="canvas" width="720" height="720"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 线段端点显示 lineCap:  默认是 butt 一根线条就是平平整整 不常用
+      // round 两端加一个半圆 半径为线条宽度的一半
+      // square 两端加一个矩形 高等于线宽的一半
+
+      ctx.lineWidth = 20;
+      ctx.strokeStyle = "white";
+      ctx.lineCap = "butt"; // 默认情况
+      ctx.beginPath();
+      ctx.moveTo(20, 20);
+      ctx.lineTo(20, 200);
+      ctx.stroke();
+
+      ctx.lineCap = "round"; // 半圆
+      ctx.beginPath();
+      ctx.moveTo(60, 20);
+      ctx.lineTo(60, 200);
+      ctx.stroke();
+
+      ctx.lineCap = "square"; // 矩形
+      ctx.beginPath();
+      ctx.moveTo(100, 20);
+      ctx.lineTo(100, 200);
+      ctx.stroke();
+
+      // 线条的连接点，外围样式：lineJoin : 默认是 miter 就是一个尖锐的角
+      // round： 圆角   bevel: 方角
+      ctx.lineJoin = "miter"; // 尖角
+      ctx.beginPath();
+      ctx.moveTo(140, 20);
+      ctx.lineTo(140, 200);
+      ctx.lineTo(200, 160);
+      ctx.stroke();
+
+      ctx.lineJoin = "round"; // 圆角
+      ctx.beginPath();
+      ctx.moveTo(240, 20);
+      ctx.lineTo(240, 200);
+      ctx.lineTo(300, 160);
+      ctx.stroke();
+
+      ctx.lineJoin = "bevel"; // 方角
+      ctx.beginPath();
+      ctx.moveTo(340, 20);
+      ctx.lineTo(340, 200);
+      ctx.lineTo(400, 160);
+      ctx.stroke();
+
+      // 虚线：setLineDash([实线宽，间距]) 可用于流程图的绘制 ---- -- -- --  ——   ——   ——
+      // lineDashOffset: 虚线起始点的偏移量
+
+      // 先画一条参考线
+      ctx.lineWidth = 10;
+      ctx.lineCap = "butt";
+      ctx.beginPath();
+      ctx.moveTo(100, 300);
+      ctx.lineTo(400, 300);
+      ctx.stroke();
+
+      // 画虚线
+      ctx.beginPath();
+      ctx.setLineDash([ctx.lineWidth * 2, ctx.lineWidth * 1.5]); // 实线宽 / 间距
+      ctx.lineDashOffset = 0; // 偏移量为0
+      ctx.moveTo(100, 320);
+      ctx.lineTo(400, 320);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.lineDashOffset = -21; // 偏移量 -20 向右偏移 为正则向左偏移
+      ctx.moveTo(100, 340);
+      ctx.lineTo(400, 340);
+      ctx.stroke();
+
+      // 有了这个属性 就可以画一个运动的边框
+
+      // speed 可以调节运动速度和运动方向
+      function runnigBorder(speed = 1) {
+        // 绘制之前 先清除上一次的绘制痕迹
+        ctx.clearRect(0, 400, 400, 320);
+        ctx.lineWidth = 4;
+        ctx.setLineDash([ctx.lineWidth * 3, ctx.lineWidth]); // 3:1
+        ctx.lineJoin = "round";
+        ctx.lineDashOffset += speed;
+
+        ctx.strokeRect(100, 480, 200, 100);
+      }
+
+      // 运动起来
+      setInterval(() => {
+        runnigBorder(-1);
+      }, 1000 / 60);
+
+      // 每一秒随机改变颜色
+      setInterval(() => {
+        ctx.strokeStyle = `#${Math.random().toString(16).slice(2, 8)}`;
+      }, 1000);
+    </script>
+  </body>
+</html>

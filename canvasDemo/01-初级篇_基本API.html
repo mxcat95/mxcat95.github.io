@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas基本API</title>
+    <style>
+      body {
+        height: 900px;
+        background-color: #ccc;
+      }
+      canvas {
+        display: block;
+        margin: 200px auto 0;
+        background-color: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 属性：可绘制区域大小 -->
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#canvas"); // 得到一个画卷
+      const ctx = canvas.getContext("2d"); // 在画卷上获取绘制区域
+
+      ctx.beginPath(); // 开始绘制
+      ctx.strokeStyle = "red"; // 拿起一支红色的笔
+      ctx.arc(250, 250, 66, 0, Math.PI * 2); // 构思一个圆形
+      ctx.stroke(); // 开始绘制 绘制一个圆形线圈
+
+      ctx.beginPath(); // 自动结束上一次绘制 开始新的绘制 必须的 不然绘制轨迹会混叠
+      ctx.fillStyle = "blue"; // 填充色设置
+      ctx.arc(250, 250, 33, 0, Math.PI * 2); // 再构思一个同心圆
+      ctx.fill(); // 填充颜色 得到一个蓝色的圆
+
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(10, 10, 80, 120); // 在左上角绘制一个绿色矩形框 等同于 ctx.rect();ctx.stroke()
+
+      ctx.fillStyle = "purple"; // 填充色
+      ctx.fillRect(410, 10, 80, 120); // 填充一个紫色矩形块
+
+      // 擦除整个画卷的下半部分 只能擦除矩形区域
+      ctx.clearRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
+
+      ctx.beginPath();
+      ctx.strokeStyle = "#ccc";
+      ctx.moveTo(0, canvas.height / 2); // 移动到某个位置 起始位置
+      ctx.lineTo(canvas.width, canvas.height / 2); // 连接到某个位置 结束位置
+      ctx.stroke(); // 在画卷中心绘制一条水平分割线
+
+      // 画一段圆弧
+      ctx.beginPath();
+      ctx.arc(100, 300, 40, 0, Math.PI / 2, true); // 逆时针 四分之三圆 false 为顺时针 四分之一圆
+      ctx.stroke();
+
+      // 画一段弧线
+      ctx.beginPath();
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 1;
+      // 显示辅助线
+      ctx.moveTo(200, 300);
+      ctx.lineTo(60, 300);
+      ctx.lineTo(200, 440);
+      ctx.stroke();
+      ctx.moveTo(140, 300);
+      ctx.lineTo(100, 340);
+      ctx.stroke();
+
+      ctx.beginPath();
+      // 先确定起始点 然后确定辅助线的另外两个点 arcTo() 方法就可以绘制一个同时与两条辅助线相切的弧线
+      ctx.moveTo(140, 300); // x0,y0
+      ctx.arcTo(60, 300, 200, 440, 24); // x1,y1,x2,y2,R半径
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // 贝塞尔曲线
+      // 二次曲线
+      ctx.beginPath();
+      ctx.strokeStyle = "purple";
+      ctx.lineWidth = 3;
+      ctx.moveTo(200, 300); // 起始点
+      ctx.quadraticCurveTo(60, 300, 200, 440); // 贝塞尔二次曲线 (控制点，结束点)
+      ctx.stroke();
+
+      // 三次曲线
+      ctx.beginPath();
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 3;
+      ctx.moveTo(200, 300); // 起始点
+      ctx.bezierCurveTo(140, 300, 100, 340, 200, 440); // 贝塞尔二次曲线 (控制点，控制点，结束点)
+      ctx.stroke();
+    </script>
+  </body>
+</html>
